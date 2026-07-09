@@ -144,4 +144,30 @@
     height: 45px;
     font-size: 10px;
   }
+
+.document-thumbnail {
+  display: block;
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.has-document:hover .document-thumbnail {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 700px) {
+  .document-thumbnail {
+    height: 50px;
+    border-radius: 4px;
+  }
+}
+
 }

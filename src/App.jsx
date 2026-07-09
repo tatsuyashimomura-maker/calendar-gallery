@@ -1,6 +1,19 @@
 import { useState } from "react";
 import "./App.css";
 
+const documents = {
+  "2026-07-09": {
+    thumbnail: "/documents/2026-07-09/page-1.png",
+    pages: [
+      "/documents/2026-07-09/page-1.png",
+      "/documents/2026-07-09/page-2.png",
+      "/documents/2026-07-09/page-3.png",
+      "/documents/2026-07-09/page-4.png",
+    ],
+    pdf: "/documents/2026-07-09/document.pdf",
+  },
+};
+
 function App() {
   const today = new Date();
 
@@ -30,6 +43,13 @@ function App() {
 
   const goToNextMonth = () => {
     setCurrentDate(new Date(year, month + 1, 1));
+  };
+
+  const createDateKey = (day) => {
+    const formattedMonth = String(month + 1).padStart(2, "0");
+    const formattedDay = String(day).padStart(2, "0");
+
+    return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
   return (
@@ -64,18 +84,38 @@ function App() {
             <div className="weekday">金</div>
             <div className="weekday saturday">土</div>
 
-            {calendarDays.map((day, index) =>
-              day === null ? (
+            {calendarDays.map((day, index) => {
+              if (day === null) {
+                return (
+                  <div
+                    className="empty-day"
+                    key={`empty-${index}`}
+                  />
+                );
+              }
+
+              const dateKey = createDateKey(day);
+              const document = documents[dateKey];
+
+              return (
                 <div
-                  className="empty-day"
-                  key={`empty-${index}`}
-                />
-              ) : (
-                <div className="calendar-day" key={day}>
+                  className={`calendar-day ${
+                    document ? "has-document" : ""
+                  }`}
+                  key={dateKey}
+                >
                   <span>{day}</span>
+
+                  {document && (
+                    <img
+                      className="document-thumbnail"
+                      src={document.thumbnail}
+                      alt={`${dateKey}の資料`}
+                    />
+                  )}
                 </div>
-              )
-            )}
+              );
+            })}
           </div>
         </section>
       </main>
