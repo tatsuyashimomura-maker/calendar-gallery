@@ -21,6 +21,9 @@ function App() {
     new Date(today.getFullYear(), today.getMonth(), 1)
   );
 
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -51,6 +54,68 @@ function App() {
 
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
+
+  const openDocument = (dateKey, document) => {
+    setSelectedDate(dateKey);
+    setSelectedDocument(document);
+    window.scrollTo(0, 0);
+  };
+
+  const closeDocument = () => {
+    setSelectedDocument(null);
+    setSelectedDate("");
+    window.scrollTo(0, 0);
+  };
+
+  if (selectedDocument) {
+  return (
+    <div className="app">
+      <header className="header">
+        <h1>Calendar Gallery</h1>
+        <p>資料閲覧カレンダー</p>
+      </header>
+
+      <main className="main-content">
+        <section className="calendar-section document-viewer">
+          <div className="document-viewer-header">
+            <button
+              type="button"
+              className="back-button"
+              onClick={closeDocument}
+            >
+              ＜ カレンダーに戻る
+            </button>
+
+            <h2>{selectedDate} の資料</h2>
+          </div>
+
+          <div className="document-pages">
+            {selectedDocument.pages.map((page, index) => (
+              <figure className="document-page" key={page}>
+                <figcaption className="document-page-number">
+                  {index + 1}ページ
+                </figcaption>
+
+                <img
+                  src={page}
+                  alt={`${selectedDate} ${index + 1}ページ`}
+                />
+              </figure>
+            ))}
+          </div>
+
+          <a
+            className="pdf-button"
+            href={selectedDocument.pdf}
+            download
+          >
+            PDFをダウンロード
+          </a>
+        </section>
+      </main>
+    </div>
+  );
+}
 
   return (
     <div className="app">
@@ -103,6 +168,11 @@ function App() {
                     document ? "has-document" : ""
                   }`}
                   key={dateKey}
+                  onClick={() => {
+                    if (document) {
+                      openDocument(dateKey, document);
+                    }
+                  }}
                 >
                   <span>{day}</span>
 
