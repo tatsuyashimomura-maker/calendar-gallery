@@ -33,6 +33,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+   カレンダー
+========================= */
+
 .calendar-header {
   display: flex;
   align-items: center;
@@ -100,20 +104,174 @@
   cursor: pointer;
 }
 
-.thumbnail-placeholder {
+.document-thumbnail {
+  display: block;
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.has-document:hover .document-thumbnail {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dispatch-thumbnail {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 80px;
+  height: 90px;
   border-radius: 8px;
-  background: #e5e7eb;
-  color: #6b7280;
-  font-size: 14px;
+  background: #e0f2fe;
+  color: #075985;
+  font-weight: bold;
 }
 
-.thumbnail-placeholder:hover {
-  background: #d1d5db;
+.has-document:hover .dispatch-thumbnail {
+  background: #bae6fd;
 }
+
+/* =========================
+   資料表示
+========================= */
+
+.document-viewer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.document-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.document-viewer-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.back-button {
+  border: none;
+  border-radius: 8px;
+  background: #f1f3f5;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: #e5e7eb;
+}
+
+.document-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.document-page {
+  margin: 0;
+}
+
+.document-page-number {
+  margin: 0 0 8px;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.document-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.pdf-button {
+  display: block;
+  width: fit-content;
+  margin: 32px auto 0;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.pdf-button:hover {
+  background: #374151;
+}
+
+/* =========================
+   配車表
+========================= */
+
+.dispatch-viewer {
+  width: 100%;
+}
+
+.dispatch-viewer h3 {
+  margin: 0 0 20px;
+}
+
+.dispatch-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.dispatch-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.dispatch-table th {
+  padding: 10px 8px;
+  background: #f3f4f6;
+  border-right: 1px solid #d1d5db;
+  border-bottom: 2px solid #9ca3af;
+  text-align: center;
+  font-weight: bold;
+}
+
+.dispatch-table td {
+  padding: 8px;
+  border-right: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  vertical-align: middle;
+}
+
+.dispatch-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* 配車表を表示するときだけ広く使う */
+
+.document-viewer:has(.dispatch-viewer) {
+  max-width: none;
+}
+
+.main-content:has(.dispatch-viewer) {
+  max-width: none;
+}
+
+/* =========================
+   スマートフォン
+========================= */
 
 @media (max-width: 700px) {
   .main-content {
@@ -140,108 +298,16 @@
     padding: 5px;
   }
 
-  .thumbnail-placeholder {
-    height: 45px;
-    font-size: 10px;
-  }
-
-.document-thumbnail {
-  display: block;
-  width: 100%;
-  height: 90px;
-  object-fit: cover;
-  object-position: top;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.has-document:hover .document-thumbnail {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-@media (max-width: 700px) {
   .document-thumbnail {
     height: 50px;
     border-radius: 4px;
   }
-}
 
-.document-viewer {
-  max-width: 900px;
-  margin: 0 auto;
-}
+  .dispatch-thumbnail {
+    height: 50px;
+    font-size: 11px;
+  }
 
-.document-viewer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-.document-viewer-header h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.back-button {
-  border: none;
-  border-radius: 8px;
-  background: #f1f3f5;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background: #e5e7eb;
-}
-
-.document-pages {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.document-page {
-  margin: 0;
-}
-
-.document-page-number {
-  margin: 0 0 8px;
-  font-weight: bold;
-  color: #4b5563;
-}
-
-.document-page img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-}
-
-.pdf-button {
-  display: block;
-  width: fit-content;
-  margin: 32px auto 0;
-  padding: 12px 20px;
-  border-radius: 8px;
-  background: #1f2937;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.pdf-button:hover {
-  background: #374151;
-}
-
-@media (max-width: 700px) {
   .document-viewer-header {
     align-items: flex-start;
     flex-direction: column;
@@ -259,96 +325,13 @@
   .document-page img {
     border-radius: 4px;
   }
-}
-.document-viewer {
-  max-width: 900px;
-  margin: 0 auto;
-}
 
-.document-viewer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-.document-viewer-header h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.back-button {
-  border: none;
-  border-radius: 8px;
-  background: #f1f3f5;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background: #e5e7eb;
-}
-
-.document-pages {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.document-page {
-  margin: 0;
-}
-
-.document-page-number {
-  margin: 0 0 8px;
-  font-weight: bold;
-  color: #4b5563;
-}
-
-.document-page img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-}
-
-.pdf-button {
-  display: block;
-  width: fit-content;
-  margin: 32px auto 0;
-  padding: 12px 20px;
-  border-radius: 8px;
-  background: #1f2937;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.pdf-button:hover {
-  background: #374151;
-}
-
-@media (max-width: 700px) {
-  .document-viewer-header {
-    align-items: flex-start;
-    flex-direction: column;
-    margin-bottom: 20px;
+  .dispatch-table {
+    font-size: 11px;
   }
 
-  .document-viewer-header h2 {
-    font-size: 20px;
+  .dispatch-table th,
+  .dispatch-table td {
+    padding: 6px;
   }
-
-  .document-pages {
-    gap: 20px;
-  }
-
-  .document-page img {
-    border-radius: 4px;
-  }
-}
-
 }

@@ -3,6 +3,7 @@ import "./App.css";
 
 const documents = {
   "2026-07-09": {
+    type: "document",
     thumbnail: "/documents/2026-07-09/page-1.png",
     pages: [
       "/documents/2026-07-09/page-1.png",
@@ -11,6 +12,11 @@ const documents = {
       "/documents/2026-07-09/page-4.png",
     ],
     pdf: "/documents/2026-07-09/document.pdf",
+  },
+
+  "2026-07-10": {
+    type: "dispatch",
+    data: "/data/2026-07-10.json",
   },
 };
 
@@ -23,6 +29,7 @@ function App() {
 
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [dispatchData, setDispatchData] = useState([]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -55,67 +62,153 @@ function App() {
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-  const openDocument = (dateKey, document) => {
+  const openDocument = async (dateKey, document) => {
     setSelectedDate(dateKey);
     setSelectedDocument(document);
+
+    if (document.type === "dispatch") {
+      const response = await fetch(document.data);
+      const data = await response.json();
+      setDispatchData(data);
+    }
+
     window.scrollTo(0, 0);
   };
 
   const closeDocument = () => {
     setSelectedDocument(null);
     setSelectedDate("");
+    setDispatchData([]);
     window.scrollTo(0, 0);
   };
 
   if (selectedDocument) {
-  return (
-    <div className="app">
-      <header className="header">
-        <h1>Calendar Gallery</h1>
-        <p>資料閲覧カレンダー</p>
-      </header>
+    return (
+      <div className="app">
+        <header className="header">
+          <h1>Calendar Gallery</h1>
+          <p>資料閲覧カレンダー</p>
+        </header>
 
-      <main className="main-content">
-        <section className="calendar-section document-viewer">
-          <div className="document-viewer-header">
-            <button
-              type="button"
-              className="back-button"
-              onClick={closeDocument}
-            >
-              ＜ カレンダーに戻る
-            </button>
+        <main className="main-content">
+          <section className="calendar-section document-viewer">
+            <div className="document-viewer-header">
+              <button
+                type="button"
+                className="back-button"
+                onClick={closeDocument}
+              >
+                ＜ カレンダーに戻る
+              </button>
 
-            <h2>{selectedDate} の資料</h2>
-          </div>
+              <h2>{selectedDate} の資料</h2>
+            </div>
 
-          <div className="document-pages">
-            {selectedDocument.pages.map((page, index) => (
-              <figure className="document-page" key={page}>
-                <figcaption className="document-page-number">
-                  {index + 1}ページ
-                </figcaption>
+            {selectedDocument.type === "document" && (
+              <>
+                <div className="document-pages">
+                  {selectedDocument.pages.map((page, index) => (
+                    <figure className="document-page" key={page}>
+                      <figcaption className="document-page-number">
+                        {index + 1}ページ
+                      </figcaption>
 
-                <img
-                  src={page}
-                  alt={`${selectedDate} ${index + 1}ページ`}
-                />
-              </figure>
-            ))}
-          </div>
+                      <img
+                        src={page}
+                        alt={`${selectedDate} ${index + 1}ページ`}
+                      />
+                    </figure>
+                  ))}
+                </div>
 
-          <a
-            className="pdf-button"
-            href={selectedDocument.pdf}
-            download
-          >
-            PDFをダウンロード
-          </a>
-        </section>
-      </main>
-    </div>
-  );
-}
+                <a
+                  className="pdf-button"
+                  href={selectedDocument.pdf}
+                  download
+                >
+                  PDFをダウンロード
+                </a>
+              </>
+            )}
+
+            {selectedDocument.type === "dispatch" && (
+              <div className="dispatch-viewer">
+                <h3>配車データ {dispatchData.length}件</h3>
+
+                <div className="dispatch-table-wrapper">
+                  <table className="dispatch-table">
+                    <thead>
+                      <tr>
+                        <th>区分</th>
+                        <th>伝票番号</th>
+                        <th>発日</th>
+                        <th>発時刻</th>
+                        <th>着日</th>
+                        <th>着時刻</th>
+                        <th>品目名</th>
+                        <th>発地</th>
+                        <th>着地</th>
+                        <th>運転手</th>
+                        <th>車両</th>
+                        <th>CH車両</th>
+                        <th>温度</th>
+                        <th>数量1</th>
+                        <th>数量2</th>
+                        <th>船会社</th>
+                        <th>乗船地</th>
+                        <th>乗船日</th>
+                        <th>乗船時刻</th>
+                        <th>下船地</th>
+                        <th>下船日</th>
+                        <th>下船時刻</th>
+                        <th>タンク前</th>
+                        <th>タンク後</th>
+                        <th>備考</th>
+                        <th>配車備考</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {dispatchData.map((row, index) => (
+                        <tr key={`${row["伝票番号"]}-${index}`}>
+                          <td>{row["区分"]}</td>
+                          <td>{row["伝票番号"]}</td>
+                          <td>{row["発日"]}</td>
+                          <td>{row["発時刻"]}</td>
+                          <td>{row["着日"]}</td>
+                          <td>{row["着時刻"]}</td>
+                          <td>{row["品目名"]}</td>
+                          <td>{row["発地名１"]}</td>
+                          <td>{row["着地名１"]}</td>
+                          <td>{row["運転手名"]}</td>
+                          <td>{row["車両コード"]}</td>
+                          <td>{row["ＣＨ車両コード"]}</td>
+                          <td>{row["温度"]}</td>
+                          <td>{row["数量１"]}</td>
+                          <td>{row["数量２"]}</td>
+                          <td>{row["船会社名"]}</td>
+                          <td>{row["乗船地名"]}</td>
+                          <td>{row["乗船日"]}</td>
+                          <td>{row["乗船時刻"]}</td>
+                          <td>{row["下船地名"]}</td>
+                          <td>{row["下船日"]}</td>
+                          <td>{row["下船時刻"]}</td>
+                          <td>{row["タンク前"]}</td>
+                          <td>{row["タンク後"]}</td>
+                          <td>{row["備考"]}</td>
+                          <td>{row["配車備考"]}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -176,12 +269,18 @@ function App() {
                 >
                   <span>{day}</span>
 
-                  {document && (
+                  {document?.type === "document" && (
                     <img
                       className="document-thumbnail"
                       src={document.thumbnail}
                       alt={`${dateKey}の資料`}
                     />
+                  )}
+
+                  {document?.type === "dispatch" && (
+                    <div className="dispatch-thumbnail">
+                      配車表
+                    </div>
                   )}
                 </div>
               );
