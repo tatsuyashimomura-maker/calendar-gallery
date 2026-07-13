@@ -26,6 +26,16 @@ const formatJapaneseDate = (dateString) => {
   return `${Number(month)}月${Number(day)}日`;
 };
 
+const formatShortDate = (dateString) => {
+  if (!dateString) return "";
+
+  const parts = dateString.split("/");
+
+  if (parts.length !== 3) return dateString;
+
+  return `${Number(parts[1])}/${Number(parts[2])}`;
+};
+
 function App() {
   const today = new Date();
 
@@ -188,11 +198,11 @@ function App() {
                 <td>{row["発時刻"]}</td>
                 <td>{row["船会社名"]}</td>
                 <td>{row["乗船地名"]}</td>
-                <td>{row["乗船日"]}</td>
+                <td>{formatShortDate(row["乗船日"])}</td>
                 <td>{row["乗船時刻"]}</td>
                 <td>{row["下船地名"]}</td>
                 <td>{row["着地名１"]}</td>
-                <td>{row["着日"]}</td>
+                <td>{formatShortDate(row["着日"])}</td>
                 <td>{row["着時刻"]}</td>
                 <td>{row["備考"]}</td>
               </tr>
@@ -239,7 +249,7 @@ function App() {
                 <td>{row["発地名１"]}</td>
                 <td>{row["船会社名"]}</td>
                 <td>{row["下船地名"]}</td>
-                <td>{row["下船日"]}</td>
+                <td>{formatShortDate(row["下船日"])}</td>
                 <td>{row["下船時刻"]}</td>
                 <td>{row["着地名１"]}</td>
                 <td>{row["着時刻"]}</td>
