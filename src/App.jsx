@@ -20,6 +20,12 @@ const documents = {
   },
 };
 
+const formatJapaneseDate = (dateString) => {
+  const [, month, day] = dateString.split("-");
+
+  return `${Number(month)}月${Number(day)}日`;
+};
+
 function App() {
   const today = new Date();
 
@@ -145,8 +151,8 @@ function App() {
 
     <div className="dispatch-section">
       <div className="dispatch-title">
-        <strong>{selectedDate}</strong>
-        <h3>積 {loadingData.length}件</h3>
+        <strong>{formatJapaneseDate(selectedDate)}</strong>
+<h3>積 {loadingData.length}件</h3>
       </div>
 
       <div className="dispatch-table-wrapper">
@@ -203,9 +209,10 @@ function App() {
 
     <div className="dispatch-section">
       <div className="dispatch-title">
-        <strong>{selectedDate}</strong>
+        <strong>{formatJapaneseDate(selectedDate)}</strong>
         <h3>卸 {unloadingData.length}件</h3>
       </div>
+    </div>
 
       <div className="dispatch-table-wrapper">
         <table className="dispatch-table">
@@ -244,7 +251,6 @@ function App() {
       </div>
     </div>
 
-  </div>
 )}          
           </section>
         </main>
