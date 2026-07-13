@@ -30,6 +30,11 @@ function App() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [dispatchData, setDispatchData] = useState([]);
+  
+  const loadingData = dispatchData.filter((row) => row["区分"] === "積");
+  const unloadingData = dispatchData.filter((row) => row["区分"] === "卸");
+
+
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -131,79 +136,116 @@ function App() {
               </>
             )}
 
-            {selectedDocument.type === "dispatch" && (
-              <div className="dispatch-viewer">
-                <h3>配車データ {dispatchData.length}件</h3>
+ {selectedDocument.type === "dispatch" && (
+  <div className="dispatch-viewer">
 
-                <div className="dispatch-table-wrapper">
-                  <table className="dispatch-table">
-                    <thead>
-                      <tr>
-                        <th>区分</th>
-                        <th>伝票番号</th>
-                        <th>発日</th>
-                        <th>発時刻</th>
-                        <th>着日</th>
-                        <th>着時刻</th>
-                        <th>品目名</th>
-                        <th>発地</th>
-                        <th>着地</th>
-                        <th>運転手</th>
-                        <th>車両</th>
-                        <th>CH車両</th>
-                        <th>温度</th>
-                        <th>数量1</th>
-                        <th>数量2</th>
-                        <th>船会社</th>
-                        <th>乗船地</th>
-                        <th>乗船日</th>
-                        <th>乗船時刻</th>
-                        <th>下船地</th>
-                        <th>下船日</th>
-                        <th>下船時刻</th>
-                        <th>タンク前</th>
-                        <th>タンク後</th>
-                        <th>備考</th>
-                        <th>配車備考</th>
-                      </tr>
-                    </thead>
+    {/* =====================
+        積
+    ===================== */}
 
-                    <tbody>
-                      {dispatchData.map((row, index) => (
-                        <tr key={`${row["伝票番号"]}-${index}`}>
-                          <td>{row["区分"]}</td>
-                          <td>{row["伝票番号"]}</td>
-                          <td>{row["発日"]}</td>
-                          <td>{row["発時刻"]}</td>
-                          <td>{row["着日"]}</td>
-                          <td>{row["着時刻"]}</td>
-                          <td>{row["品目名"]}</td>
-                          <td>{row["発地名１"]}</td>
-                          <td>{row["着地名１"]}</td>
-                          <td>{row["運転手名"]}</td>
-                          <td>{row["車両コード"]}</td>
-                          <td>{row["ＣＨ車両コード"]}</td>
-                          <td>{row["温度"]}</td>
-                          <td>{row["数量１"]}</td>
-                          <td>{row["数量２"]}</td>
-                          <td>{row["船会社名"]}</td>
-                          <td>{row["乗船地名"]}</td>
-                          <td>{row["乗船日"]}</td>
-                          <td>{row["乗船時刻"]}</td>
-                          <td>{row["下船地名"]}</td>
-                          <td>{row["下船日"]}</td>
-                          <td>{row["下船時刻"]}</td>
-                          <td>{row["タンク前"]}</td>
-                          <td>{row["タンク後"]}</td>
-                          <td>{row["備考"]}</td>
-                          <td>{row["配車備考"]}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+    <div className="dispatch-section">
+      <div className="dispatch-title">
+        <strong>{selectedDate}</strong>
+        <h3>積 {loadingData.length}件</h3>
+      </div>
+
+      <div className="dispatch-table-wrapper">
+        <table className="dispatch-table">
+          <thead>
+            <tr>
+              <th>CH番号</th>
+              <th>運転手</th>
+              <th>タンク前</th>
+              <th>タンク後</th>
+              <th>発地</th>
+              <th>発時刻</th>
+              <th>船会社</th>
+              <th>乗船地</th>
+              <th>乗船日</th>
+              <th>乗船時刻</th>
+              <th>下船地</th>
+              <th>着地</th>
+              <th>着日</th>
+              <th>着時刻</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {loadingData.map((row, index) => (
+              <tr key={`loading-${row["伝票番号"]}-${index}`}>
+                <td>{row["ＣＨ車両コード"]}</td>
+                <td>{row["運転手名"] || row["傭車先名"]}</td>
+                <td>{row["タンク前"]}</td>
+                <td>{row["タンク後"]}</td>
+                <td>{row["発地名１"]}</td>
+                <td>{row["発時刻"]}</td>
+                <td>{row["船会社名"]}</td>
+                <td>{row["乗船地名"]}</td>
+                <td>{row["乗船日"]}</td>
+                <td>{row["乗船時刻"]}</td>
+                <td>{row["下船地名"]}</td>
+                <td>{row["着地名１"]}</td>
+                <td>{row["着日"]}</td>
+                <td>{row["着時刻"]}</td>
+                <td>{row["備考"]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    {/* =====================
+        卸
+    ===================== */}
+
+    <div className="dispatch-section">
+      <div className="dispatch-title">
+        <strong>{selectedDate}</strong>
+        <h3>卸 {unloadingData.length}件</h3>
+      </div>
+
+      <div className="dispatch-table-wrapper">
+        <table className="dispatch-table">
+          <thead>
+            <tr>
+              <th>CH番号</th>
+              <th>卸運転手</th>
+              <th>発地</th>
+              <th>船会社</th>
+              <th>下船地</th>
+              <th>下船日</th>
+              <th>下船時刻</th>
+              <th>着地</th>
+              <th>着時間</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {unloadingData.map((row, index) => (
+              <tr key={`unloading-${row["伝票番号"]}-${index}`}>
+                <td>{row["ＣＨ車両コード"]}</td>
+                <td>{row["卸運転手名"] || row["卸傭車先名"]}</td>
+                <td>{row["発地名１"]}</td>
+                <td>{row["船会社名"]}</td>
+                <td>{row["下船地名"]}</td>
+                <td>{row["下船日"]}</td>
+                <td>{row["下船時刻"]}</td>
+                <td>{row["着地名１"]}</td>
+                <td>{row["着時刻"]}</td>
+                <td>{row["備考"]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+)}          
           </section>
         </main>
       </div>
