@@ -15,24 +15,6 @@ import Papa from "papaparse";
 
 import "./App.css";
 
-const salesData = [
-  {
-    month: "4月",
-    sales: 49201650,
-    expenses: 28491201,
-  },
-  {
-    month: "5月",
-    sales: 49073100,
-    expenses: 29369194,
-  },
-  {
-    month: "6月",
-    sales: 50162100,
-    expenses: 29951106,
-  },
-];
-
 const documents = {
   "2026-07-09": {
     type: "document",
@@ -68,6 +50,14 @@ const formatShortDate = (dateString) => {
   return `${Number(parts[1])}/${Number(parts[2])}`;
 };
 
+const getYearMonth = (dateString) => {
+  if (!dateString) return "";
+
+  const [year, month] = dateString.split("/");
+
+  return `${year}-${String(month).padStart(2, "0")}`;
+};
+
 function App() {
 
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -92,20 +82,12 @@ const [endYearMonth, setEndYearMonth] = useState("");
   setCsvData(results.data);
 
   const csvYearMonthList = [
-    ...new Set(
-      results.data
-        .map((row) => {
-          const dateString = row["発日"];
-
-          if (!dateString) return "";
-
-          const [year, month] = dateString.split("/");
-
-          return `${year}-${String(month).padStart(2, "0")}`;
-        })
-        .filter((yearMonth) => yearMonth)
-    ),
-  ].sort();
+  ...new Set(
+    results.data
+      .map((row) => getYearMonth(row["発日"]))
+      .filter((yearMonth) => yearMonth)
+  ),
+].sort();
 
   if (csvYearMonthList.length > 0) {
     setStartYearMonth(csvYearMonthList[0]);
@@ -136,19 +118,6 @@ const filteredCsvData =
         (row) => row["荷主C"] === selectedCustomer
       );
 
-console.log(
-  "荷主C9の発日サンプル:",
-  filteredCsvData.slice(0, 10).map((row) => row["発日"])
-);
-
-const getYearMonth = (dateString) => {
-  if (!dateString) return "";
-
-  const [year, month] = dateString.split("/");
-
-  return `${year}-${String(month).padStart(2, "0")}`;
-};
-
 const yearMonthList = [
   ...new Set(
     filteredCsvData
@@ -166,8 +135,6 @@ const selectedYearMonthList = yearMonthList.filter(
 const periodFilteredData = filteredCsvData.filter((row) =>
   selectedYearMonthList.includes(getYearMonth(row["発日"]))
 );
-
-console.log("年月一覧:", yearMonthList);
 
 const calculateSales = (data) => {
   return data.reduce(
@@ -246,7 +213,8 @@ const totalExpenses = csvSalesData.reduce(
 
 const grossProfit = totalSales - totalExpenses;
 
-const grossProfitRate = (grossProfit / totalSales) * 100;
+const grossProfitRate =
+  totalSales > 0 ? (grossProfit / totalSales) * 100 : 0;
 
 const today = new Date();
 
@@ -540,10 +508,12 @@ const today = new Date();
           const monthlyGrossProfit = item.sales - item.expenses;
 
           const monthlyGrossProfitRate =
-            (monthlyGrossProfit / item.sales) * 100;
+            item.sales > 0
+             ? (monthlyGrossProfit / item.sales) * 100
+            : 0;
 
           return (
-            <tr key={item.month}>
+            <tr key={item.yearMonth}>
               <td>{item.month}</td>
 
               <td>¥{item.sales.toLocaleString()}</td>
