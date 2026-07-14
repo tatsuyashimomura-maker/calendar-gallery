@@ -867,4 +867,65 @@
   min-height: 350px;
 }
 
+/* =====================
+   Analysis Panel
+===================== */
+
+.analysis-panel {
+  margin-bottom: 30px;
+  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.analysis-panel h3 {
+  margin: 0 0 20px;
+  color: #102a43;
+  font-size: 20px;
+}
+
+.analysis-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.analysis-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.analysis-item label,
+.analysis-label {
+  color: #718096;
+  font-size: 14px;
+}
+
+.analysis-item select {
+  min-width: 140px;
+  padding: 10px 12px;
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 16px;
+}
+
+.analysis-count {
+  min-width: 140px;
+  padding: 10px 12px;
+  color: #102a43;
+  font-size: 20px;
+}
+
+.analysis-summary {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e6eaf0;
+  color: #718096;
+  font-size: 14px;
+}
+
 }

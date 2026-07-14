@@ -295,58 +295,69 @@ const today = new Date();
           <section className="dashboard-section">
   
   <div className="dashboard-header">
-  <div>
     <h2>Sales Dashboard</h2>
     <p>売上・経費・粗利益分析</p>
   </div>
 
-  <div className="csv-upload">
-    <label htmlFor="csv-file">
-      CSVファイルを選択
-    </label>
+ <div className="analysis-panel">
+  <h3>分析条件</h3>
 
-    <input
-      id="csv-file"
-      type="file"
-      accept=".csv"
-      onChange={handleCsvUpload}
-    />
+  <div className="analysis-controls">
+    <div className="analysis-item">
+      <label htmlFor="csv-file">
+        CSVファイル
+      </label>
 
-{customerList.length > 0 && (
-  <div className="customer-select">
-    <label htmlFor="customer-select">
-      荷主C
-    </label>
+      <input
+        id="csv-file"
+        type="file"
+        accept=".csv"
+        onChange={handleCsvUpload}
+      />
+    </div>
 
-    <select
-      id="customer-select"
-      value={selectedCustomer}
-      onChange={(event) => setSelectedCustomer(event.target.value)}
-    >
-      {customerList.map((customer) => (
-        <option key={customer} value={customer}>
-          {customer}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
+    {customerList.length > 0 && (
+      <div className="analysis-item">
+        <label htmlFor="customer-select">
+          荷主C
+        </label>
+
+        <select
+          id="customer-select"
+          value={selectedCustomer}
+          onChange={(event) =>
+            setSelectedCustomer(event.target.value)
+          }
+        >
+          {customerList.map((customer) => (
+            <option key={customer} value={customer}>
+              {customer}
+            </option>
+          ))}
+        </select>
+      </div>
+    )}
 
     {csvData.length > 0 && (
-  <>
-    <p>
-      {csvData.length.toLocaleString()}件のデータを読み込みました
-    </p>
+      <div className="analysis-item">
+        <span className="analysis-label">
+          対象データ
+        </span>
 
-   <p>
-  荷主C「{selectedCustomer}」：
-  {filteredCsvData.length.toLocaleString()}件
-</p>
-
-   </>
-)}
+        <strong className="analysis-count">
+          {filteredCsvData.length.toLocaleString()}件
+        </strong>
+      </div>
+    )}
   </div>
-</div>
+
+  {csvData.length > 0 && (
+    <div className="analysis-summary">
+      読込データ：{csvData.length.toLocaleString()}件 ／
+      選択荷主C：{selectedCustomer}
+    </div>
+  )}
+</div> 
 
  <div className="kpi-grid">
   <div className="kpi-card">
