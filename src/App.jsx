@@ -129,23 +129,6 @@ const yearMonthList = [
 
 console.log("年月一覧:", yearMonthList);
 
-const aprilData = filteredCsvData.filter((row) => {
-  return row["発日"] && row["発日"].includes("/4/");
-});
-
-const mayData = filteredCsvData.filter((row) => {
-  return row["発日"] && row["発日"].includes("/5/");
-});
-
-const juneData = filteredCsvData.filter((row) => {
-  return row["発日"] && row["発日"].includes("/6/");
-});
-
-console.log(
-  "4月売上運賃サンプル:",
-  aprilData.slice(0, 10).map((row) => row["売上運賃"])
-);
-
 const calculateSales = (data) => {
   return data.reduce(
     (sum, row) =>
@@ -153,10 +136,6 @@ const calculateSales = (data) => {
     0
   );
 };
-
-const aprilSales = calculateSales(aprilData);
-const maySales = calculateSales(mayData);
-const juneSales = calculateSales(juneData);
 
 const calculateExpenses = (data) => {
   return data.reduce((sum, row) => {
@@ -185,10 +164,6 @@ const calculateExpenses = (data) => {
     );
   }, 0);
 };
-
-const aprilExpenses = calculateExpenses(aprilData);
-const mayExpenses = calculateExpenses(mayData);
-const juneExpenses = calculateExpenses(juneData);
 
 const csvSalesData = yearMonthList.map((yearMonth) => {
   const monthlyData = filteredCsvData.filter(
@@ -363,39 +338,12 @@ const today = new Date();
       {csvData.length.toLocaleString()}件のデータを読み込みました
     </p>
 
-    <p>
-      荷主C「9」：{filteredCsvData.length.toLocaleString()}件
-    </p>
-
-    <p>
-  4月：{aprilData.length}件 ／
-  5月：{mayData.length}件 ／
-  6月：{juneData.length}件
-</p>
-<p>
-  4月売上運賃：¥{aprilSales.toLocaleString()}
+   <p>
+  荷主C「{selectedCustomer}」：
+  {filteredCsvData.length.toLocaleString()}件
 </p>
 
-<p>
-  5月売上運賃：¥{maySales.toLocaleString()}
-</p>
-
-<p>
-  6月売上運賃：¥{juneSales.toLocaleString()}
-</p>
-<p>
-  4月経費合計：¥{aprilExpenses.toLocaleString()}
-</p>
-
-<p>
-  5月経費合計：¥{mayExpenses.toLocaleString()}
-</p>
-
-<p>
-  6月経費合計：¥{juneExpenses.toLocaleString()}
-</p>
-
-  </>
+   </>
 )}
   </div>
 </div>
