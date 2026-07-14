@@ -76,6 +76,9 @@ function App() {
 
   const [selectedCustomer, setSelectedCustomer] = useState("all");
 
+  const [startYearMonth, setStartYearMonth] = useState("");
+const [endYearMonth, setEndYearMonth] = useState("");
+
   const handleCsvUpload = (event) => {
   const file = event.target.files[0];
 
@@ -85,12 +88,36 @@ function App() {
     header: true,
     skipEmptyLines: true,
 
-    complete: (results) => {
-      setCsvData(results.data);
+   complete: (results) => {
+  setCsvData(results.data);
 
-      console.log("CSV読込結果:", results.data);
-      console.log("CSV列名:", results.meta.fields);
-    },
+  const csvYearMonthList = [
+    ...new Set(
+      results.data
+        .map((row) => {
+          const dateString = row["発日"];
+
+          if (!dateString) return "";
+
+          const [year, month] = dateString.split("/");
+
+          return `${year}-${String(month).padStart(2, "0")}`;
+        })
+        .filter((yearMonth) => yearMonth)
+    ),
+  ].sort();
+
+  if (csvYearMonthList.length > 0) {
+    setStartYearMonth(csvYearMonthList[0]);
+
+    setEndYearMonth(
+      csvYearMonthList[csvYearMonthList.length - 1]
+    );
+  }
+
+  console.log("CSV読込結果:", results.data);
+  console.log("CSV列名:", results.meta.fields);
+},
   });
 };
 
@@ -130,6 +157,16 @@ const yearMonthList = [
   ),
 ].sort();
 
+const selectedYearMonthList = yearMonthList.filter(
+  (yearMonth) =>
+    yearMonth >= startYearMonth &&
+    yearMonth <= endYearMonth
+);
+
+const periodFilteredData = filteredCsvData.filter((row) =>
+  selectedYearMonthList.includes(getYearMonth(row["発日"]))
+);
+
 console.log("年月一覧:", yearMonthList);
 
 const calculateSales = (data) => {
@@ -168,7 +205,7 @@ const calculateExpenses = (data) => {
   }, 0);
 };
 
-const csvSalesData = yearMonthList.map((yearMonth) => {
+const csvSalesData = selectedYearMonthList.map((yearMonth) => {
   const monthlyData = filteredCsvData.filter(
     (row) => getYearMonth(row["発日"]) === yearMonth
   );
@@ -184,11 +221,15 @@ const csvSalesData = yearMonthList.map((yearMonth) => {
 });
 
 const periodLabel =
-  yearMonthList.length > 0
-    ? `${Number(yearMonthList[0].split("-")[0])}年${Number(
-        yearMonthList[0].split("-")[1]
+  selectedYearMonthList.length > 0
+    ? `${Number(
+        selectedYearMonthList[0].split("-")[0]
+      )}年${Number(
+        selectedYearMonthList[0].split("-")[1]
       )}月〜${Number(
-        yearMonthList[yearMonthList.length - 1].split("-")[1]
+        selectedYearMonthList[
+          selectedYearMonthList.length - 1
+        ].split("-")[1]
       )}月`
     : "";
 
@@ -353,6 +394,50 @@ const today = new Date();
       </div>
     )}
 
+   {yearMonthList.length > 0 && (
+  <>
+    <div className="analysis-item">
+      <label htmlFor="start-year-month">
+        開始月
+      </label>
+
+      <select
+        id="start-year-month"
+        value={startYearMonth}
+        onChange={(event) =>
+          setStartYearMonth(event.target.value)
+        }
+      >
+        {yearMonthList.map((yearMonth) => (
+          <option key={yearMonth} value={yearMonth}>
+            {yearMonth}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div className="analysis-item">
+      <label htmlFor="end-year-month">
+        終了月
+      </label>
+
+      <select
+        id="end-year-month"
+        value={endYearMonth}
+        onChange={(event) =>
+          setEndYearMonth(event.target.value)
+        }
+      >
+        {yearMonthList.map((yearMonth) => (
+          <option key={yearMonth} value={yearMonth}>
+            {yearMonth}
+          </option>
+        ))}
+      </select>
+    </div>
+  </>
+)} 
+
     {csvData.length > 0 && (
       <div className="analysis-item">
         <span className="analysis-label">
@@ -360,7 +445,7 @@ const today = new Date();
         </span>
 
         <strong className="analysis-count">
-          {filteredCsvData.length.toLocaleString()}件
+          {periodFilteredData.length.toLocaleString()}件
         </strong>
       </div>
     )}
