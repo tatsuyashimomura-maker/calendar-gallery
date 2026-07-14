@@ -74,7 +74,7 @@ function App() {
 
   const [csvData, setCsvData] = useState([]);
 
-  const [selectedCustomer, setSelectedCustomer] = useState("9");
+  const [selectedCustomer, setSelectedCustomer] = useState("all");
 
   const handleCsvUpload = (event) => {
   const file = event.target.files[0];
@@ -102,9 +102,12 @@ const customerList = [
   ),
 ].sort((a, b) => Number(a) - Number(b));
 
-const filteredCsvData = csvData.filter(
-  (row) => row["荷主C"] === selectedCustomer
-);
+const filteredCsvData =
+  selectedCustomer === "all"
+    ? csvData
+    : csvData.filter(
+        (row) => row["荷主C"] === selectedCustomer
+      );
 
 console.log(
   "荷主C9の発日サンプル:",
@@ -323,18 +326,20 @@ const today = new Date();
         </label>
 
         <select
-          id="customer-select"
-          value={selectedCustomer}
-          onChange={(event) =>
-            setSelectedCustomer(event.target.value)
-          }
-        >
-          {customerList.map((customer) => (
-            <option key={customer} value={customer}>
-              {customer}
-            </option>
-          ))}
-        </select>
+  id="customer-select"
+  value={selectedCustomer}
+  onChange={(event) =>
+    setSelectedCustomer(event.target.value)
+  }
+>
+  <option value="all">全体</option>
+
+  {customerList.map((customer) => (
+    <option key={customer} value={customer}>
+      {customer}
+    </option>
+  ))}
+</select>
       </div>
     )}
 
@@ -354,7 +359,8 @@ const today = new Date();
   {csvData.length > 0 && (
     <div className="analysis-summary">
       読込データ：{csvData.length.toLocaleString()}件 ／
-      選択荷主C：{selectedCustomer}
+      選択荷主C：
+{selectedCustomer === "all" ? "全体" : selectedCustomer}
     </div>
   )}
 </div> 
