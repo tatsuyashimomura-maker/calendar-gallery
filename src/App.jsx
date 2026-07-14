@@ -11,6 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import Papa from "papaparse";
+
 import "./App.css";
 
 const salesData = [
@@ -70,21 +72,129 @@ function App() {
 
   const [currentPage, setCurrentPage] = useState("dashboard");
 
-    const totalSales = salesData.reduce(
-    (sum, item) => sum + item.sales,
+  const [csvData, setCsvData] = useState([]);
+
+  const handleCsvUpload = (event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+
+    complete: (results) => {
+      setCsvData(results.data);
+
+      console.log("CSV読込結果:", results.data);
+      console.log("CSV列名:", results.meta.fields);
+    },
+  });
+};
+
+   const filteredCsvData = csvData.filter(
+  (row) => row["荷主C"] === "9"
+);
+console.log(
+  "荷主C9の発日サンプル:",
+  filteredCsvData.slice(0, 10).map((row) => row["発日"])
+);
+
+const aprilData = filteredCsvData.filter((row) => {
+  return row["発日"] && row["発日"].includes("/4/");
+});
+
+const mayData = filteredCsvData.filter((row) => {
+  return row["発日"] && row["発日"].includes("/5/");
+});
+
+const juneData = filteredCsvData.filter((row) => {
+  return row["発日"] && row["発日"].includes("/6/");
+});
+
+console.log(
+  "4月売上運賃サンプル:",
+  aprilData.slice(0, 10).map((row) => row["売上運賃"])
+);
+
+const calculateSales = (data) => {
+  return data.reduce(
+    (sum, row) =>
+      sum + Number((row["売上運賃"] || "0").replace(/,/g, "")),
     0
   );
+};
 
-  const totalExpenses = salesData.reduce(
-    (sum, item) => sum + item.expenses,
-    0
-  );
+const aprilSales = calculateSales(aprilData);
+const maySales = calculateSales(mayData);
+const juneSales = calculateSales(juneData);
 
-  const grossProfit = totalSales - totalExpenses;
+const calculateExpenses = (data) => {
+  return data.reduce((sum, row) => {
+    const payment =
+      Number((row["支払運賃"] || "0").replace(/,/g, ""));
 
-  const grossProfitRate = (grossProfit / totalSales) * 100;
+    const taxFreePayment =
+      Number((row["支払非課税運賃"] || "0").replace(/,/g, ""));
 
-  const today = new Date();
+    const unloadingPayment =
+      Number((row["卸支払運賃"] || "0").replace(/,/g, ""));
+
+    const unloadingTaxFreePayment =
+      Number((row["卸支払非課税運賃"] || "0").replace(/,/g, ""));
+
+    const ferryCost =
+      Number((row["フェリー代"] || "0").replace(/,/g, ""));
+
+    return (
+      sum +
+      payment +
+      taxFreePayment +
+      unloadingPayment +
+      unloadingTaxFreePayment +
+      ferryCost
+    );
+  }, 0);
+};
+
+const aprilExpenses = calculateExpenses(aprilData);
+const mayExpenses = calculateExpenses(mayData);
+const juneExpenses = calculateExpenses(juneData);
+
+const csvSalesData = [
+  {
+    month: "4月",
+    sales: aprilSales,
+    expenses: aprilExpenses,
+  },
+  {
+    month: "5月",
+    sales: maySales,
+    expenses: mayExpenses,
+  },
+  {
+    month: "6月",
+    sales: juneSales,
+    expenses: juneExpenses,
+  },
+];
+
+const totalSales = csvSalesData.reduce(
+  (sum, item) => sum + item.sales,
+  0
+);
+
+const totalExpenses = csvSalesData.reduce(
+  (sum, item) => sum + item.expenses,
+  0
+);
+
+const grossProfit = totalSales - totalExpenses;
+
+const grossProfitRate = (grossProfit / totalSales) * 100;
+
+const today = new Date();
+
 
   const [currentDate, setCurrentDate] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1)
@@ -182,12 +292,67 @@ function App() {
 
         <main className="main-content">
           <section className="dashboard-section">
+  
   <div className="dashboard-header">
-    <div>
-      <h2>Sales Dashboard</h2>
-      <p>売上・経費・粗利益分析</p>
-    </div>
+  <div>
+    <h2>Sales Dashboard</h2>
+    <p>売上・経費・粗利益分析</p>
   </div>
+
+  <div className="csv-upload">
+    <label htmlFor="csv-file">
+      CSVファイルを選択
+    </label>
+
+    <input
+      id="csv-file"
+      type="file"
+      accept=".csv"
+      onChange={handleCsvUpload}
+    />
+
+    {csvData.length > 0 && (
+  <>
+    <p>
+      {csvData.length.toLocaleString()}件のデータを読み込みました
+    </p>
+
+    <p>
+      荷主C「9」：{filteredCsvData.length.toLocaleString()}件
+    </p>
+
+    <p>
+  4月：{aprilData.length}件 ／
+  5月：{mayData.length}件 ／
+  6月：{juneData.length}件
+</p>
+<p>
+  4月売上運賃：¥{aprilSales.toLocaleString()}
+</p>
+
+<p>
+  5月売上運賃：¥{maySales.toLocaleString()}
+</p>
+
+<p>
+  6月売上運賃：¥{juneSales.toLocaleString()}
+</p>
+<p>
+  4月経費合計：¥{aprilExpenses.toLocaleString()}
+</p>
+
+<p>
+  5月経費合計：¥{mayExpenses.toLocaleString()}
+</p>
+
+<p>
+  6月経費合計：¥{juneExpenses.toLocaleString()}
+</p>
+
+  </>
+)}
+  </div>
+</div>
 
  <div className="kpi-grid">
   <div className="kpi-card">
@@ -220,7 +385,7 @@ function App() {
 
   <div className="chart-wrapper">
     <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={salesData}>
+      <LineChart data={csvSalesData}>
         <CartesianGrid strokeDasharray="3 3" />
 
         <XAxis dataKey="month" />
@@ -265,7 +430,7 @@ function App() {
       </thead>
 
       <tbody>
-        {salesData.map((item) => {
+        {csvSalesData.map((item) => { 
           const monthlyGrossProfit = item.sales - item.expenses;
 
           const monthlyGrossProfitRate =
