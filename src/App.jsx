@@ -1,4 +1,16 @@
 import { useState } from "react";
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
 import "./App.css";
 
 const salesData = [
@@ -202,7 +214,82 @@ function App() {
     <span>粗利益 ÷ 売上</span>
   </div>
 </div>
- 
+
+<div className="chart-section">
+  <h3>月別売上・経費推移</h3>
+
+  <div className="chart-wrapper">
+    <ResponsiveContainer width="100%" height={350}>
+      <LineChart data={salesData}>
+        <CartesianGrid strokeDasharray="3 3" />
+
+        <XAxis dataKey="month" />
+
+        <YAxis />
+
+        <Tooltip />
+
+        <Legend />
+
+        <Line
+          type="monotone"
+          dataKey="sales"
+          name="売上運賃"
+          strokeWidth={3}
+        />
+
+        <Line
+          type="monotone"
+          dataKey="expenses"
+          name="経費合計"
+          strokeWidth={3}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+</div>
+
+<div className="sales-table-section">
+  <h3>月別売上実績</h3>
+
+  <div className="sales-table-wrapper">
+    <table className="sales-table">
+      <thead>
+        <tr>
+          <th>月</th>
+          <th>売上運賃</th>
+          <th>経費合計</th>
+          <th>粗利益</th>
+          <th>粗利率</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {salesData.map((item) => {
+          const monthlyGrossProfit = item.sales - item.expenses;
+
+          const monthlyGrossProfitRate =
+            (monthlyGrossProfit / item.sales) * 100;
+
+          return (
+            <tr key={item.month}>
+              <td>{item.month}</td>
+
+              <td>¥{item.sales.toLocaleString()}</td>
+
+              <td>¥{item.expenses.toLocaleString()}</td>
+
+              <td>¥{monthlyGrossProfit.toLocaleString()}</td>
+
+              <td>{monthlyGrossProfitRate.toFixed(1)}%</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 </section>
         </main>
       </div>

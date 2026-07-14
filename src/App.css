@@ -792,4 +792,79 @@
   }
 }
 
+/* =====================
+   Sales Table
+===================== */
+
+.sales-table-section {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.sales-table-section h3 {
+  margin: 0 0 20px;
+  color: #102a43;
+}
+
+.sales-table-wrapper {
+  overflow-x: auto;
+}
+
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sales-table th,
+.sales-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sales-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 14px;
+  text-align: right;
+}
+
+.sales-table td {
+  color: #334155;
+  text-align: right;
+}
+
+.sales-table th:first-child,
+.sales-table td:first-child {
+  text-align: left;
+}
+
+.sales-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* =====================
+   Sales Chart
+===================== */
+
+.chart-section {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.chart-section h3 {
+  margin: 0 0 20px;
+  color: #102a43;
+}
+
+.chart-wrapper {
+  width: 100%;
+  min-height: 350px;
+}
+
 }
