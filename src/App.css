@@ -726,4 +726,70 @@
     font-size: 22px;
     white-space: nowrap;
   }
+
+/* =====================
+   Dashboard
+===================== */
+
+.dashboard-section {
+  padding: 30px;
+}
+
+.dashboard-header {
+  margin-bottom: 25px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.dashboard-header p {
+  margin-top: 6px;
+  color: #6b7280;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-card p {
+  margin: 0 0 12px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.kpi-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 26px;
+  color: #102a43;
+}
+
+.kpi-card span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 }

@@ -37,6 +37,9 @@ const formatShortDate = (dateString) => {
 };
 
 function App() {
+
+  const [currentPage, setCurrentPage] = useState("dashboard");
+
   const today = new Date();
 
   const [currentDate, setCurrentDate] = useState(
@@ -103,15 +106,82 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+    const renderNavigation = () => {
+    return (
+      <header className="header">
+        <h1>FleetPortal</h1>
+        <p>北海道地区 業務管理システム</p>
+
+        <nav>
+          <button
+            type="button"
+            onClick={() => setCurrentPage("dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPage("calendar")}
+          >
+            配車表カレンダー
+          </button>
+        </nav>
+      </header>
+    );
+  };
+
+  if (currentPage === "dashboard") {
+    return (
+      <div className="app">
+        {renderNavigation()}
+
+        <main className="main-content">
+          <section className="dashboard-section">
+  <div className="dashboard-header">
+    <div>
+      <h2>Sales Dashboard</h2>
+      <p>売上・経費・粗利益分析</p>
+    </div>
+  </div>
+
+  <div className="kpi-grid">
+    <div className="kpi-card">
+      <p>売上運賃</p>
+      <strong>¥148,436,850</strong>
+      <span>2026年4月〜6月</span>
+    </div>
+
+    <div className="kpi-card">
+      <p>経費合計</p>
+      <strong>¥87,811,601</strong>
+      <span>2026年4月〜6月</span>
+    </div>
+
+    <div className="kpi-card">
+      <p>粗利益</p>
+      <strong>¥60,625,249</strong>
+      <span>売上 − 経費</span>
+    </div>
+
+    <div className="kpi-card">
+      <p>粗利率</p>
+      <strong>40.8%</strong>
+      <span>粗利益 ÷ 売上</span>
+    </div>
+  </div>
+</section>
+        </main>
+      </div>
+    );
+  }
+
   if (selectedDocument) {
     return (
       <div className="app">
-        <header className="header">
-          <h1>Calendar Gallery</h1>
-          <p>資料閲覧カレンダー</p>
-        </header>
+          {renderNavigation()}
 
-        <main className="main-content">
+          <main className="main-content">
           <section className="calendar-section document-viewer">
             <div className="document-viewer-header">
               <button
@@ -269,11 +339,8 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <header className="header">
-        <h1>Calendar Gallery</h1>
-        <p>資料閲覧カレンダー</p>
-      </header>
+  <div className="app">
+    {renderNavigation()}
 
       <main className="main-content">
         <section className="calendar-section">
