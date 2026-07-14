@@ -183,6 +183,16 @@ const csvSalesData = yearMonthList.map((yearMonth) => {
   };
 });
 
+const periodLabel =
+  yearMonthList.length > 0
+    ? `${Number(yearMonthList[0].split("-")[0])}年${Number(
+        yearMonthList[0].split("-")[1]
+      )}月〜${Number(
+        yearMonthList[yearMonthList.length - 1].split("-")[1]
+      )}月`
+    : "";
+
+
 const totalSales = csvSalesData.reduce(
   (sum, item) => sum + item.sales,
   0
@@ -369,13 +379,13 @@ const today = new Date();
   <div className="kpi-card">
     <p>売上運賃</p>
     <strong>¥{totalSales.toLocaleString()}</strong>
-    <span>2026年4月〜6月</span>
+    <p>{periodLabel}</p>
   </div>
 
   <div className="kpi-card">
     <p>経費合計</p>
     <strong>¥{totalExpenses.toLocaleString()}</strong>
-    <span>2026年4月〜6月</span>
+    <p>{periodLabel}</p>
   </div>
 
   <div className="kpi-card">
