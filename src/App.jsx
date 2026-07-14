@@ -111,6 +111,24 @@ console.log(
   filteredCsvData.slice(0, 10).map((row) => row["発日"])
 );
 
+const getYearMonth = (dateString) => {
+  if (!dateString) return "";
+
+  const [year, month] = dateString.split("/");
+
+  return `${year}-${String(month).padStart(2, "0")}`;
+};
+
+const yearMonthList = [
+  ...new Set(
+    filteredCsvData
+      .map((row) => getYearMonth(row["発日"]))
+      .filter((yearMonth) => yearMonth)
+  ),
+].sort();
+
+console.log("年月一覧:", yearMonthList);
+
 const aprilData = filteredCsvData.filter((row) => {
   return row["発日"] && row["発日"].includes("/4/");
 });
@@ -172,23 +190,20 @@ const aprilExpenses = calculateExpenses(aprilData);
 const mayExpenses = calculateExpenses(mayData);
 const juneExpenses = calculateExpenses(juneData);
 
-const csvSalesData = [
-  {
-    month: "4月",
-    sales: aprilSales,
-    expenses: aprilExpenses,
-  },
-  {
-    month: "5月",
-    sales: maySales,
-    expenses: mayExpenses,
-  },
-  {
-    month: "6月",
-    sales: juneSales,
-    expenses: juneExpenses,
-  },
-];
+const csvSalesData = yearMonthList.map((yearMonth) => {
+  const monthlyData = filteredCsvData.filter(
+    (row) => getYearMonth(row["発日"]) === yearMonth
+  );
+
+  const month = yearMonth.split("-")[1];
+
+  return {
+    yearMonth: yearMonth,
+    month: `${Number(month)}月`,
+    sales: calculateSales(monthlyData),
+    expenses: calculateExpenses(monthlyData),
+  };
+});
 
 const totalSales = csvSalesData.reduce(
   (sum, item) => sum + item.sales,
