@@ -1,6 +1,24 @@
 import { useState } from "react";
 import "./App.css";
 
+const salesData = [
+  {
+    month: "4月",
+    sales: 49201650,
+    expenses: 28491201,
+  },
+  {
+    month: "5月",
+    sales: 49073100,
+    expenses: 29369194,
+  },
+  {
+    month: "6月",
+    sales: 50162100,
+    expenses: 29951106,
+  },
+];
+
 const documents = {
   "2026-07-09": {
     type: "document",
@@ -39,6 +57,20 @@ const formatShortDate = (dateString) => {
 function App() {
 
   const [currentPage, setCurrentPage] = useState("dashboard");
+
+    const totalSales = salesData.reduce(
+    (sum, item) => sum + item.sales,
+    0
+  );
+
+  const totalExpenses = salesData.reduce(
+    (sum, item) => sum + item.expenses,
+    0
+  );
+
+  const grossProfit = totalSales - totalExpenses;
+
+  const grossProfitRate = (grossProfit / totalSales) * 100;
 
   const today = new Date();
 
@@ -145,31 +177,32 @@ function App() {
     </div>
   </div>
 
-  <div className="kpi-grid">
-    <div className="kpi-card">
-      <p>売上運賃</p>
-      <strong>¥148,436,850</strong>
-      <span>2026年4月〜6月</span>
-    </div>
-
-    <div className="kpi-card">
-      <p>経費合計</p>
-      <strong>¥87,811,601</strong>
-      <span>2026年4月〜6月</span>
-    </div>
-
-    <div className="kpi-card">
-      <p>粗利益</p>
-      <strong>¥60,625,249</strong>
-      <span>売上 − 経費</span>
-    </div>
-
-    <div className="kpi-card">
-      <p>粗利率</p>
-      <strong>40.8%</strong>
-      <span>粗利益 ÷ 売上</span>
-    </div>
+ <div className="kpi-grid">
+  <div className="kpi-card">
+    <p>売上運賃</p>
+    <strong>¥{totalSales.toLocaleString()}</strong>
+    <span>2026年4月〜6月</span>
   </div>
+
+  <div className="kpi-card">
+    <p>経費合計</p>
+    <strong>¥{totalExpenses.toLocaleString()}</strong>
+    <span>2026年4月〜6月</span>
+  </div>
+
+  <div className="kpi-card">
+    <p>粗利益</p>
+    <strong>¥{grossProfit.toLocaleString()}</strong>
+    <span>売上 − 経費</span>
+  </div>
+
+  <div className="kpi-card">
+    <p>粗利率</p>
+    <strong>{grossProfitRate.toFixed(1)}%</strong>
+    <span>粗利益 ÷ 売上</span>
+  </div>
+</div>
+ 
 </section>
         </main>
       </div>
